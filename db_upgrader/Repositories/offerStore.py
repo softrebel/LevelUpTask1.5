@@ -16,6 +16,16 @@ class OfferStore(Store):
         except Exception as e:
             raise StoreException('error storing offer: {}'.format(e))
 
+    def update_offer_order(self,offer):
+        try:
+            c = self.conn.cursor()
+            c.execute(
+                "UPDATE offer SET `order` = %s WHERE ID = %s",
+                (offer.order,offer.ID))
+            return c.lastrowid
+        except Exception as e:
+            raise StoreException('error storing offer: {}'.format(e))
+
     def get_offers(self):
         try:
             c = self.conn.cursor()

@@ -1,4 +1,4 @@
-markdown
-requests
 pylint
 mypy
+mysql-connector-python
+faker

@@ -25,7 +25,7 @@ class OfferSeeder(seeder):
         for i in range(number):
             with ProductStore() as product_store:
                 product = Product(**product_store.random())
-            with  SourceStore() as source_store:
+            with SourceStore() as source_store:
                 source_store = Source(**source_store.random())
             with OfferStore() as offer_store:
                 id = offer_store.add_offer(Offer(None, product.ID, source_store.ID, random_date(start, end)))
