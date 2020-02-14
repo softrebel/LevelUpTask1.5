@@ -1,7 +1,6 @@
-from tests.seeds.seeder import *
 from db_upgrader.Repositories.customerStore import *
 from db_upgrader.Models.customer import *
-
+from seeds.seeder import *
 
 class CustomerSeeder(seeder):
     def seed(number=10):

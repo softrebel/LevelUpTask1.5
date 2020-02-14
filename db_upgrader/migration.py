@@ -1,4 +1,4 @@
-from tests.seeds.offerSeeder import *
+from seeds.offerSeeder import *
 from db_upgrader.Repositories.store import *
 
 

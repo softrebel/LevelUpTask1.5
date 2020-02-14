@@ -1,9 +1,8 @@
-from tests.seeds.customerSeeder import *
-from tests.seeds.productSeeder import *
-from tests.seeds.offerSeeder import *
-from tests.seeds.sourceSeeder import *
 from db_upgrader.migration import *
-
+from seeds.sourceSeeder import *
+from seeds.customerSeeder import *
+from seeds.productSeeder import *
+from seeds.offerSeeder import *
 
 def prepare_data():
     CustomerSeeder.seed(20)

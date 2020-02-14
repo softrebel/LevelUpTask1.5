@@ -1,11 +1,10 @@
-from tests.seeds.seeder import *
 from db_upgrader.Repositories.offerStore import *
 from db_upgrader.Repositories.productStore import *
 from db_upgrader.Repositories.sourceStore import *
 from db_upgrader.Models.offer import *
 from random import randrange
 from datetime import datetime, timedelta
-
+from seeds.seeder import *
 
 def random_date(start, end):
     """
