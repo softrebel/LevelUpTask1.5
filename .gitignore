@@ -12,3 +12,4 @@ env/
 venv/
 .vscode
 config/db.py
+config/test.py

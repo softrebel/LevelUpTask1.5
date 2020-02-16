@@ -6,4 +6,4 @@ if __name__ == "__main__":
     migration: Migration = Migration()
     migration.migrate()
     end: timedelta = datetime.now() - start
-    print(end)
+    print("time elapsed:{}".format(end))
