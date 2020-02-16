@@ -1,13 +1,17 @@
 from seeds.offerSeeder import *
 from db_upgrader.Repositories.store import *
+from typing import List, Dict, Set, Iterator
+from mysql.connector.cursor import MySQLCursorDict
 
 
 class Migration(Store):
 
-    def __init__(self):
-        super().__init__()
-        self.offer_orders = []
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.offer_orders: List[Dict] = []
         '''
+        Example:
+        
         [
             {'productId': None, 'offers': [
                 {
@@ -18,11 +22,11 @@ class Migration(Store):
              }
         ]
         '''
-        self.products = set()
+        self.products: Set = set()
 
-    def fetch_data(self):
-        c = self.conn.cursor(dictionary=True)
-        statement = '''
+    def fetch_data(self) -> Iterator[Dict]:
+        c: MySQLCursorDict = self.conn.cursor(dictionary=True)
+        statement: str = '''
                 SELECT o.ID,
                    o.userId,
                    o.productId,
@@ -44,20 +48,19 @@ class Migration(Store):
         c.execute(statement)
         return Store.iter_row(c)
 
-    def update_offer(self, offer):
+    def update_offer(self, offer: Offer) -> None:
         with OfferStore() as offer_store:
             id = offer_store.update_offer_order(offer)
-            print(id)
             offer_store.complete()
 
-    def update_data(self):
+    def update_data(self) -> None:
         for product in self.offer_orders:
-            sorted_offers = sorted(product['offers'], key=lambda x: x['created_at'])
+            sorted_offers: List[Dict] = sorted(product['offers'], key=lambda x: x['created_at'])
             for key, item in enumerate(sorted_offers):
-                offer = Offer(order=key + 1, ID=item['ID'])
+                offer: Offer = Offer(order=key + 1, ID=item['ID'])
                 self.update_offer(offer)
 
-    def migrate(self):
+    def migrate(self) -> None:
         for row in self.fetch_data():
             if row['productId'] in self.products:
                 for offer in self.offer_orders:

@@ -1,5 +1,7 @@
 import mysql.connector
-from config.db import db_config as config
+from config.db import db_config
+from mysql.connector.cursor import MySQLCursorDict
+from typing import List, Dict, Iterator, Union
 
 
 class StoreException(Exception):
@@ -9,11 +11,12 @@ class StoreException(Exception):
 
 
 class Store():
-    def __init__(self):
+    def __init__(self, dbconfig=None):
         try:
+            config = dbconfig or db_config
             self.conn = mysql.connector.connect(**config)
         except Exception as e:
-            raise StoreException(*e.args, **e.kwargs)
+            raise StoreException(*e.args)
         self._complete = False
 
     def __enter__(self):
@@ -22,26 +25,30 @@ class Store():
     def __exit__(self, type_, value, traceback):
         self.close()
 
-    def complete(self):
+    def complete(self) -> None:
         self._complete = True
 
-    def random(self):
+    def random(self) -> Union[Dict, None]:
         c = self.conn.cursor(dictionary=True)
         c.execute('SELECT * FROM {} ORDER BY RAND() LIMIT 1;'.format(self.table))
         return c.fetchone()
 
-    def find(self, ID):
-        try:
-            c = self.conn.cursor(dictionary=True)
-            statement = 'SELECT * FROM {} where ID = %s ;'.format(self.table)
-            c.execute(statement, (ID,))
-            return c.fetchone()
-        except Exception as e:
-            raise StoreException('error storing customer: {}'.format(e))
+    def find_by_id(self, ID: int) -> Union[Dict, None]:
+        c = self.conn.cursor(dictionary=True)
+        statement = 'SELECT * FROM {} where ID = %s ;'.format(self.table)
+        c.execute(statement, (ID,))
+        return c.fetchone()
 
-    def iter_row(cursor, size=1000):
+    def where(self, condition) -> Union[Dict, None]:
+        c = self.conn.cursor(dictionary=True)
+        statement = 'SELECT * FROM {table} where {condition}'.format(table=self.table, condition=' AND '.join(
+            ['{} = %s'.format(x) for x in condition.keys()]))
+        c.execute(statement, tuple(condition.values()))
+        return c.fetchone()
+
+    def iter_row(cursor: MySQLCursorDict, size: int = 1000) -> Iterator[Dict]:
         while True:
-            rows = cursor.fetchmany(size)
+            rows: List[Dict] = cursor.fetchmany(size)
             if not rows:
                 break
             for row in rows:

@@ -5,7 +5,8 @@ import random
 
 
 class SourceSeeder(seeder):
-    def seed(number=10):
+    @staticmethod
+    def seed(number: int = 10):
         for i in range(number):
             with SourceStore() as source_store:
                 id = source_store.add_source(Source(SourceSeeder.faker().name(), random.randint(0, 1), 1))

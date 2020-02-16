@@ -4,7 +4,8 @@ from db_upgrader.Models.product import *
 from seeds.seeder import *
 
 class ProductSeeder(seeder):
-    def seed(number=10):
+    @staticmethod
+    def seed(number:int=10):
         for i in range(number):
             with ProductStore() as product_store, CustomerStore() as customer_store:
                 customer = Customer(**customer_store.random())

@@ -1,6 +1,6 @@
-class Source():
-    def __init__(self, name=None, is_premium=None, is_enable=None, ID=None):
-        self.ID = ID
-        self.name = name
-        self.is_premium = is_premium
-        self.is_enable = is_enable
+class Source:
+    def __init__(self, name: str = None, is_premium: int = None, is_enable: int = None, ID: int = None):
+        self.ID: int = ID
+        self.name: str = name
+        self.is_premium: int = is_premium
+        self.is_enable: int = is_enable
